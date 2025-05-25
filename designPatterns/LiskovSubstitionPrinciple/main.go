@@ -63,7 +63,6 @@ func (s *Square) SetHeight(height int) {
 func main() {
 	rc := &Rectangle{2, 3}
 	UseIt(rc)
-
 	sq := NewSquare(5)
 	UseIt(sq)
 }
