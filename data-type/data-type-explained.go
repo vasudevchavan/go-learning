@@ -5,6 +5,12 @@ import (
 	"strings"
 )
 
+type Car struct {
+	Make  string
+	Model string
+	Year  int
+}
+
 func main() {
 	a := true
 	b := false
@@ -45,5 +51,10 @@ func main() {
 		ab = ab + 2
 	}
 
-	
+	// Structs
+	car := Car{
+		Make:  "Toyota",
+		Model: "Corolla",
+		Year:  2020}
+	fmt.Printf("Car details: Make: %s, Model: %s, Year: %d\n", car.Make, car.Model, car.Year)
 }
