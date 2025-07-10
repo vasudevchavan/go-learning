@@ -5,6 +5,23 @@ import (
 	"strings"
 )
 
+// Aggregators struct
+
+type myStruct struct {
+	Luxury        bool
+	Make          string
+	Model         string
+	Year          int
+	NumberOfTyres int
+	BucketSeat    bool
+}
+
+func UpdateCar(c *myStruct, make string, model string, year int) {
+	c.Make = make
+	c.Model = model
+	c.Year = year
+}
+
 func main() {
 	a := true
 	b := false
@@ -45,5 +62,50 @@ func main() {
 		ab = ab + 2
 	}
 
-	
+	// Aggregators array
+
+	var myArrayInt [5]int
+	myArrayInt[0] = 10
+	myArrayInt[1] = 20
+	myArrayInt[2] = 30
+	myArrayInt[3] = 40
+	myArrayInt[4] = 50
+	fmt.Println("my array is ", myArrayInt)
+
+	var myArrayString [5]string
+	myArrayString[0] = "one"
+	myArrayString[1] = "two"
+	myArrayString[2] = "three"
+	myArrayString[3] = "four"
+	myArrayString[4] = "five"
+	fmt.Println("my string array is ", myArrayString)
+
+	var myCar myStruct
+	myCar.Luxury = true
+	myCar.Make = "BMW"
+	myCar.Model = "X5"
+	myCar.Year = 2023
+	myCar.NumberOfTyres = 4
+	myCar.BucketSeat = true
+	fmt.Println("my car is ", myCar)
+
+	var myCars []myStruct
+	myCars = append(myCars, myCar)
+	myCars = append(myCars, myStruct{Luxury: false, Make: "Toyota", Model: "Corolla", Year: 2020, NumberOfTyres: 4, BucketSeat: false})
+	fmt.Println("my cars are ", myCars)
+
+	// Pointers
+
+	myNewCar := &myStruct{
+		Luxury:        true,
+		Make:          "Tesla",
+		Model:         "Model S",
+		Year:          2023,
+		NumberOfTyres: 4,
+		BucketSeat:    true}
+
+	fmt.Println("my new car is ", myNewCar)
+	UpdateCar(myNewCar, "Tesla", "Model X", 2024)
+	fmt.Println("my new car is ", myNewCar)
+
 }
