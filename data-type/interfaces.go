@@ -1,6 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"io"
+	"net/http"
+	"os"
+)
 
 type botEngish struct{}
 type botSpanish struct{}
@@ -31,6 +36,12 @@ func cPrintGreeting(b pBot) {
 	fmt.Println(b.getGreeting())
 }
 
+type Response struct {
+	StatusCode int    `json:"status_code"`
+	Body       string `json:"body"`
+	Status     string `json:"status"`
+}
+
 func main() {
 	eb := botEngish{}
 	sb := botSpanish{}
@@ -42,4 +53,43 @@ func main() {
 	cPrintGreeting(eb)
 	cPrintGreeting(sb)
 
+	// New example of using the interface
+
+	resp, err := http.Get("https://google.com")
+	if err != nil {
+		fmt.Println("Error fetching URL:", err)
+		return
+	}
+
+	// check once.
+	// bs := make([]byte, 999999)
+	// resp.Body.Read(bs)
+	// fmt.Println("Response Body:", string(bs))
+
+	io.Copy(os.Stdout, resp.Body)
+
+	fmt.Println("Response body ", resp.Body)
+
+	// bodyBytes, err := io.ReadAll(resp.Body)
+	// if err != nil {
+	// 	fmt.Println("Error reading response body:", err)
+	// 	return
+	// }
+
+	// // fmt.Println("Response Body:", string(bodyBytes))
+
+	// readRespondJson := Response{
+	// 	StatusCode: resp.StatusCode,
+	// 	Body:       string(bodyBytes),
+	// 	Status:     resp.Status,
+	// }
+
+	// dataJson, err := json.Marshal(readRespondJson)
+	// if err != nil {
+	// 	fmt.Println("Error marshalling response:", err)
+	// 	return
+	// }
+	// fmt.Println("Response JSON:", string(dataJson))
+
+	defer resp.Body.Close()
 }
