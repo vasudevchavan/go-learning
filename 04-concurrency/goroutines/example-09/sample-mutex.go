@@ -5,15 +5,16 @@ import (
 	"sync"
 )
 
-var mutex sync.Mutex
-
 // Writing to a predefined slice of integer
 func writingToSlice(i int, result []int, wg *sync.WaitGroup) {
+
 	defer wg.Done()
 	result[i] = i * i
 }
 
 func squareNumber(result []int) {
+	var wg sync.WaitGroup
+
 	for i := 0; i < len(result); i++ {
 		wg.Add(1)
 		i := i
@@ -62,30 +63,32 @@ func withOutMutex(wg *sync.WaitGroup) {
 //       /Users/vasudevchavan/delete_today_junk/goroutines/main.go:25 +0xa4
 
 func withMutex(wg *sync.WaitGroup) {
+	var mu sync.Mutex
 	sliceOfInt := []int{}
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
 		go func(num int) {
 			defer wg.Done()
-			mutex.Lock()
+			mu.Lock()
 			sliceOfInt = append(sliceOfInt, num)
-			mutex.Unlock()
+			mu.Unlock()
 		}(i)
 	}
 	wg.Wait()
 	// fmt.Println("Length of numbers:", len(sliceOfInt))
 }
 
-func withMutexString(ln int, wg *sync.WaitGroup) string {
+func withMutexString(ln int, wg *sync.WaitGroup, mu *sync.Mutex) string {
+
 	var cstring string
 	for i := 0; i < ln; i++ {
 		wg.Add(1)
 		go func(num int) {
 			j := num
 			defer wg.Done()
-			mutex.Lock()
+			mu.Lock()
 			cstring += fmt.Sprintf("%d", j)
-			mutex.Unlock()
+			mu.Unlock()
 		}(i)
 	}
 	wg.Wait()
@@ -93,15 +96,17 @@ func withMutexString(ln int, wg *sync.WaitGroup) string {
 }
 
 func withMutexMap(ln int, wg *sync.WaitGroup) {
+
+	var mu sync.Mutex
 	sharedMap := make(map[int]string)
 	for i := 0; i < ln; i++ {
 		wg.Add(1)
 		go func(num int) {
 			defer wg.Done()
 			j := num
-			mutex.Lock()
+			mu.Lock()
 			sharedMap[num] = fmt.Sprintf("Value-%d", j)
-			mutex.Unlock()
+			mu.Unlock()
 
 		}(i)
 	}

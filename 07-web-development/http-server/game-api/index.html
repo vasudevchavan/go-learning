@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <title>Rock Paper Scissors</title>
+</head>
+<body>
+   <div class="container">
+        <h1 class="mt-4"> Welcome Page of Rock Paper Scissors Game </h1>
+        <hr>
+        <p id="userchoose">&nbsp</p>
+        <p id="computerchoose">&nbsp</p>
+        <p id="result">&nbsp</p>
+        <p id="resultmessage">&nbsp</p>
+        <hr>
+        <p> Choose rock paper or scissor! </p>
+        <br>
+        <button type="button" class="btn btn-primary" onclick="choose(0)">Rock</button>
+        <button type="button" class="btn btn-success" onclick="choose(1)">Paper</button>
+        <button type="button" class="btn btn-warning" onclick="choose(2)">Scissors</button>
+   </div>
+</body>
+<script>
+    function choose(x) {
+        fetch("/play?c=" + x )
+            .then(response => response.json())
+            .then(data => {
+                if (x == 0) {
+                    document.getElementById("userchoose").innerHTML = "You picked Rock";
+                }else if (x == 1 ) {
+                    document.getElementById("userchoose").innerHTML = "You picked Paper";
+                } else if (x == 2) {
+                    document.getElementById("userchoose").innerHTML = "You picked Scissors";
+                } else if (x == 3) {
+                    document.getElementById("userchoose").innerHTML = "You picked Quit";
+                }
+
+                document.getElementById("computerchoose").innerHTML = "Computer picked " + data.computerchoose;
+                document.getElementById("result").innerHTML = data.result;
+                document.getElementById("resultmessage").innerHTML = data.resultmessage;
+
+        })
+
+    }
+</script>
+</html>

@@ -15,28 +15,23 @@ type SafeSlice struct {
 	slice []int
 }
 
-
 type SafeMap struct {
-	mu    sync.RWMutex
-	m 		map[string]int
+	mu sync.RWMutex
+	m  map[string]int
 }
 
-
-
-func (sm *SafeMap) Read(key string) (int,bool) {
+func (sm *SafeMap) Read(key string) (int, bool) {
 	sm.mu.RLock()
 	defer sm.mu.RUnlock()
-	val,ok := sm.m[key]
-	return val,ok
+	val, ok := sm.m[key]
+	return val, ok
 }
-
 
 func (sm *SafeMap) Write(key string, value int) {
 	sm.mu.Lock()
 	defer sm.mu.Unlock()
 	sm.m[key] = value
 }
-
 
 func (ss *SafeSlice) Read(index int) (int, bool) {
 	ss.mu.RLock()
@@ -68,7 +63,7 @@ func (ss *SafeString) Read() string {
 
 	// Second way
 	ss.mu.RLock()
-	val := ss.str  // Copy value
+	val := ss.str // Copy value
 	defer ss.mu.RUnlock()
 	return val
 }
@@ -130,9 +125,6 @@ func rwMutexSlice(wg *sync.WaitGroup) {
 	fmt.Println("Final slice:", ss.slice)
 }
 
-
-
-
 func rwMutexMap(wg *sync.WaitGroup) {
 	sm := &SafeMap{m: make(map[string]int)}
 	// Writers: write values concurrently
@@ -140,8 +132,8 @@ func rwMutexMap(wg *sync.WaitGroup) {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
-			key:= fmt.Sprintf("key-%d",i)
-			sm.Write(key,i*100)
+			key := fmt.Sprintf("key-%d", i)
+			sm.Write(key, i*100)
 		}(i)
 	}
 	// Readers: read values concurrently
@@ -149,21 +141,18 @@ func rwMutexMap(wg *sync.WaitGroup) {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
-			key := fmt.Sprintf("key-%d",i)
+			key := fmt.Sprintf("key-%d", i)
 			val, ok := sm.Read(key)
 			if ok {
 				fmt.Printf("Reader %d read: key=%s, value=%d\n", i, key, val)
 			} else {
 				fmt.Printf("Reader %d read: key=%s not found\n", i, key)
 			}
-		}(i*100)
+		}(i)
 	}
 	wg.Wait()
 
-	for key,val := range sm.m {
-		fmt.Printf(" key:%v,val:%v \n",key,val)
+	for key, val := range sm.m {
+		fmt.Printf(" key:%v,val:%v \n", key, val)
 	}
 }
-
-
-
