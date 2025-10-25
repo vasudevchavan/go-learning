@@ -7,6 +7,7 @@ import (
 func main() {
 
 	// Sample channel with single value sending and receiving it.
+	// ----------------------------------------------------------------------------------------
 	singleChan := make(chan int)
 	go func() {
 		singleChan <- 45
@@ -14,7 +15,22 @@ func main() {
 	fmt.Println("We are receving a single value", <-singleChan)
 	close(singleChan)
 
+	// Send and receive message using channel
+	// ----------------------------------------------------------------------------------------
+	sendMsg := make(chan string)
+	receiveMsg := make(chan string)
+	go func() {
+		sendMsg <- "testing send"
+	}()
+
+	go func() {
+		tmp1 := <-sendMsg
+		receiveMsg <- tmp1
+	}()
+	fmt.Println(<-receiveMsg)
+
 	// Sample example of channel
+	// ----------------------------------------------------------------------------------------
 	fmt.Println("Sending and received bool")
 	done := make(chan bool)
 	go worker(done)
@@ -22,13 +38,44 @@ func main() {
 	close(done)
 
 	// Sample example to send and receive an Int
+	// ----------------------------------------------------------------------------------------
 	fmt.Println("\nSend and Receive single int")
 	singleInt := make(chan int)
 	go receiveInt(singleInt)
 	fmt.Printf("We received singe integer %v \n", <-singleInt)
 	// close(singleInt) Leds to error since this channel is closed inside goRoutine
 
+	// Example of sequential and parallel channel usage
+	// ----------------------------------------------------------------------------------------
+	pInt := make(chan int)
+	fmt.Println("Sequential")
+	go func() {
+		for i := 0; i < 5; i++ {
+			pInt <- i
+		}
+		close(pInt)
+	}()
+
+	for val := range pInt {
+		fmt.Println(val)
+	}
+
+	// Second example
+	// ----------------------------------------------------------------------------------------
+	p1Int := make(chan int)
+	for i := 0; i < 5; i++ {
+		go func(num int) {
+			p1Int <- num
+		}(i)
+	}
+
+	fmt.Println("Prallel")
+	for i := 0; i < 5; i++ {
+		fmt.Println(<-p1Int)
+	}
+
 	// Sample example to Print range of int
+	// ----------------------------------------------------------------------------------------
 	fmt.Println("\nPrinting int using channels")
 	numbers := make(chan int)
 	go printNumbers(numbers)
@@ -37,6 +84,7 @@ func main() {
 	}
 
 	// Sample example to Print only even numbers
+	// ----------------------------------------------------------------------------------------
 	fmt.Printf("\nPrinting even numbers")
 	evenNumbers := make(chan int)
 	go getEvenNumbers(evenNumbers, 6)
@@ -45,7 +93,7 @@ func main() {
 	}
 
 	// Sample example to Print odd and even numbers using different channels
-
+	// ----------------------------------------------------------------------------------------
 	fmt.Println("Printing Odd Even number sequentially ")
 	getEven := make(chan int)
 	getOdd := make(chan int)
@@ -74,7 +122,7 @@ func main() {
 	<-doneOdd
 
 	// Sample example to Print odd and even numbers using different channels using different Method
-
+	// ----------------------------------------------------------------------------------------
 	fmt.Println("Printing Odd Even number parallel")
 	getEvenN := make(chan bool)
 	getOddN := make(chan bool)
@@ -90,31 +138,4 @@ func main() {
 	for range getOddN {
 	}
 
-	// Example of sequential and parallel channel usage
-
-	pInt := make(chan int)
-
-	fmt.Println("Sequential")
-	go func() {
-		for i := 0; i < 5; i++ {
-			pInt <- i
-		}
-		close(pInt)
-	}()
-
-	for val := range pInt {
-		fmt.Println(val)
-	}
-
-	p1Int := make(chan int)
-	for i := 0; i < 5; i++ {
-		go func(num int) {
-			p1Int <- num
-		}(i)
-	}
-
-	fmt.Println("Prallel")
-	for i := 0; i < 5; i++ {
-		fmt.Println(<-p1Int)
-	}
 }
