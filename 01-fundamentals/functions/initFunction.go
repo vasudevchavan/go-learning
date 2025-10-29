@@ -1,13 +1,13 @@
 package main
 
-import(
-  "fmt"
+import (
+	"fmt"
 )
 
-func init(){
-  fmt.Println("We are going to launch the program")
+func init() {
+	fmt.Println("We are going to launch the program")
 }
 
-func main(){
-  fmt.Println("We are in main function")
+func main() {
+	fmt.Println("We are in main function")
 }
